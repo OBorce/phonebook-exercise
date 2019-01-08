@@ -61,7 +61,9 @@ class BulgarianPhoneBook {
      * @return true if number was found and updated
      */
     fun addOutgoingCallsForNumber(name: String, numberOfOutCalls: Long): Boolean =
-        phoneBook.removePhoneNumber(name)
+        name
+            .takeIf { numberOfOutCalls > 0 }
+            ?.let(phoneBook::removePhoneNumber)
             ?.let { it.copy(numCalls = it.numCalls + numberOfOutCalls) }
             ?.also(top5NumbersByNumOfOutCalls::updateExistingIfValid)
             ?.let(phoneBook::addPhoneNumber) != null

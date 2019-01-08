@@ -78,12 +78,17 @@ class SizedCache<T>(comparator: Comparator<T>, private val cacheSize: Int) {
             ?.forEach(this::addValue)
     }
 
+    /**
+     * Update a value if it is already in the cache else try to add it in the cache
+     */
     fun updateExistingIfValid(value: T) {
+        if (isInvalidated) return
+
         value
-            .takeIf { contains(value) }
+            .takeIf(::contains)
             ?.let {
                 cachedValues.remove(value)
                 cachedValues.add(value)
-            }
+            } ?: addValue(value)
     }
 }
